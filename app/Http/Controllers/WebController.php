@@ -24,7 +24,7 @@ class WebController extends Controller
 
     public function blogCategoryPage($id)
     {
-        $category = Category::where('id', $id)->firstOrFail();
+        $category = Category::where('id', $id)->firstOrFail(); //test
         $blogs = $category->blogs()->with(['categories', 'authors'])->get();
         return view('web.blogs.blog-category', compact('category', 'blogs'));
     }
