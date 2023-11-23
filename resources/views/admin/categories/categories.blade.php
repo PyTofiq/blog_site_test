@@ -5,6 +5,8 @@
 @section('content')
 <div class="container">
 
+    
+
     <h2>Category table</h2>
     <a class="btn btn-success mb-5" href="{{ route('admin-category-add-page') }}">Create new category</a>
     <table class="table table-hover">

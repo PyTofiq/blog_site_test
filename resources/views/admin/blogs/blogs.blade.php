@@ -29,7 +29,7 @@
                             @endif
                         </td>
                         <td>{{ $blog->authors->name }}</td>
-                        <td>          <img src="@if($blog->image) {{ asset('uploads/blogs/'.$blog->image) }} @else {{ asset('uploads/default.png') }} @endif" alt="" width="100px" height="100px"></td>
+                        <td>          <img src="{{ asset('storage/uploads/blogs/'.$blog->image) }}" alt="" width="100px" height="100px"></td>
                         <td>
                             <a href="{{ route('admin-blog-edit-page', $blog->id) }}" class="btn btn-outline-success">Edit</a>
                             <a href="{{ route('admin-blog-delete', $blog->id) }}" class="btn btn-outline-danger">Delete</a>

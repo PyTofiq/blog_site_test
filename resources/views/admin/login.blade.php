@@ -14,6 +14,18 @@
 
         <h4>Login</h4>
 
+        @if ($errors->any())
+        <div class="alert alert-danger mb-5 mt-5">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+
+
         <form action="{{ route('admin-login-post') }}" method="POST">
         @csrf
               <div class="form-floating mt-5">

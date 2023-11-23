@@ -4,7 +4,19 @@
 
 <div class="container mt-5">
 
+
+
     <h4>Register</h4>
+
+    @if ($errors->any())
+    <div class="alert alert-danger mb-5 mt-5">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
     <form action="{{ route('register-post') }}" method="POST" enctype="muiltipart-data">
     @csrf

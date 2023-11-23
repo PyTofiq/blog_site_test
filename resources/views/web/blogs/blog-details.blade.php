@@ -15,7 +15,7 @@
             {{-- {{ dd($blog) }} --}}
             @if($blog->image)
             <div class="blog-image mb-5">
-                <img src="{{ asset('uploads/blogs/'.$blog->image) }}" alt="" width="100px" height="100px">
+                <img src="{{ $blog->coverImage() }}" alt="" width="100px" height="100px">
             </div>
             @endif
 
@@ -52,25 +52,7 @@
 
         <div class="related-blogs mb-5 mt-5">
             <h3>Related Blogs:</h3>
-            <div class="blogs row mt-5">
-                @foreach ($blogs as $blog)
-                <div class="blog col-md-3">
-                    <div class="card">
-                      <img src="@if($blog->image) {{ asset('uploads/blogs/'.$blog->image) }} @else {{ asset('uploads/default.png') }} @endif" class="card-img-top" alt="...">
-                      <div class="card-body">
-                        <h5 class="card-title"><a href="{{ route('blog-details', $blog->id) }}">{{ $blog->title }}</a></h5>
-                        <p class="card-text">
-                            @if($blog->categories)
-                            @foreach($blog->categories as $cat)
-                            <span>{{$cat->name}},</span>
-                            @endforeach
-                            @endif
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                @endforeach
-            </div>
+            @include('web.components.blogs')
 
         </div>
 

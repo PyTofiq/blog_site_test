@@ -5,6 +5,17 @@
 {{-- {{ dd($old->categories) }} --}}
 
 <div class="container">
+
+    @if ($errors->any())
+    <div class="alert alert-danger mb-5 mt-5">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <form action="{{ route('blog-edit-post', $old->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-floating mt-5 mb-5">
@@ -23,7 +34,7 @@
             @endforeach
           </div>
           <div>
-          <img src="@if($old->image) {{ asset('uploads/blogs/'.$old->image) }} @else {{ asset('uploads/default.png') }} @endif" alt="" width="100px" height="100px" class="mt-5 mb-5">
+          <img src="{{ $old->coverImage() }}" alt="" width="100px" height="100px" class="mt-5 mb-5">
 
           </div>
           <div class="mb-3">
@@ -31,7 +42,7 @@
             <input class="form-control" type="file" id="formFile" name="image">
           </div>
 
-          <button class="btn btn-success mt-5" type="submit">Edit Blog</button>
+          <button class="btn btn-success mt-5 mb-5" type="submit">Edit Blog</button>
 
     </form>
 </div>

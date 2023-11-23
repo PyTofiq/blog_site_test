@@ -5,6 +5,18 @@
 {{-- {{ dd($old->categories) }} --}}
 
 <div class="container">
+
+    @if ($errors->any())
+    <div class="alert alert-danger mb-5 mt-5">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
     <form action="{{ route('admin-blog-edit', $old->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-floating mt-5 mb-5">
@@ -28,7 +40,7 @@
             <option value="{{ $author->id }}" @if($old->author_id == $author->id) selected @endif>{{ $author->name }}</option>
             @endforeach
           </select>
-          <img src="@if($old->image) {{ asset('uploads/blogs/'.$old->image) }} @else {{ asset('uploads/default.png') }} @endif" alt="" width="100px" height="100px" class="mt-5 mb-5">
+          <img src="{{ $old->coverImage() }}" alt="" width="100px" height="100px" class="mt-5 mb-5">
           <div class="mb-3">
             <label for="formFile" class="form-label">Default file input example</label>
             <input class="form-control" type="file" id="formFile" name="image">

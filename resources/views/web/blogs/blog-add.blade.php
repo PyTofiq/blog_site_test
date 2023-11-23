@@ -4,6 +4,18 @@
 @section('content')
 
 <div class="container">
+
+    @if ($errors->any())
+    <div class="alert alert-danger mb-5 mt-5">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
     <form action="{{ route('blog-add-post') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="form-floating mt-5 mb-5">

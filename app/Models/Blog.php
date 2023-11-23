@@ -34,7 +34,7 @@ class Blog extends Model
     public function coverImage()
     {
         if (!is_null($this->image)) {
-            return asset('uploads/blogs/' . $this->image);
+            return asset('storage/uploads/blogs/' . $this->image);
         }
         return asset('uploads/default.png');
     }
