@@ -7,10 +7,11 @@
             <h5 class="card-title"><a href="{{ route('blog-details', $blog->id) }}">{{ $blog->title }}</a></h5>
             <p class="card-text">
                 @if($blog->categories)
-                @foreach($blog->categories as $cat)
-                <span>{{$cat->name}},</span>
+                @foreach($blog->categories as $index => $cat)
+                    <span>{{ $cat->name }}</span>
+                    @if($index < count($blog->categories) - 1),@endif
                 @endforeach
-                @endif  
+            @endif
             </p>
           </div>
         </div>
