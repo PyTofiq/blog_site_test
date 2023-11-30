@@ -17,27 +17,19 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminBlogController extends Controller
 {
-    public function createBlog(){
-        $blog = Blog::create([
-            'title'=> 'Test title',
-            'description' => 'Test desc',
-            'image' => 'default.png',
-            'author_id' => 3,
-        ]);
-        return response()->json($blog, 201);
-    }
+
     public function blogsPage(){
         $blogs = Blog::with(['authors','categories'])
-        ->get()
-        ;
+        ->get();
 
         return view('admin.blogs.blogs', compact(
             'blogs'
         ));
     }
+
     public function editBlogPage($blog){
         $old = Blog::with('categories')
-        ->where('id', $blog)->first();
+        ->where('id', $blog)->first(); // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
         $categories = Category::all();
         $authors = User::where('status', 0)->get();
         // return $old->categories;
@@ -52,7 +44,7 @@ class AdminBlogController extends Controller
         $validator = Validator::make($request->all(),[
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'category' => 'array',
+            'category' => 'array', // gonderilen kateqoriyanin olub olmadigini yoxlamaq.
         ]);
         if($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
@@ -70,7 +62,7 @@ class AdminBlogController extends Controller
             if ($blog->image) {
                 Storage::disk('public')->delete('uploads/blogs/' . $blog->image);
             }
-            $imagePath = $request->file('image')->store('uploads/blogs', 'public');
+            $imagePath = $request->file('image')->store('uploads/blogs', 'public'); // duzgun yere upload etmir
             $blog->image = basename($imagePath);
         }
 
@@ -83,9 +75,9 @@ class AdminBlogController extends Controller
     }
 
     public function deleteBlog($id){
-        $blog = Blog::where('id', $id)->first();
+        $blog = Blog::where('id', $id)->first();  // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
         if ($blog->image) {
-            $imagePath = public_path('uploads/blogs/' . $blog->image);
+            $imagePath = public_path('uploads/blogs/' . $blog->image); //duzgun yerden silmir
 
             if (File::exists($imagePath)) {
                 File::delete($imagePath);

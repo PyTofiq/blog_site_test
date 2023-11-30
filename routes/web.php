@@ -8,8 +8,6 @@ use App\Http\Controllers\WEB\BlogController;
 use App\Http\Controllers\WEB\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/create-user', [AdminUserController::class, 'createUser']);
-Route::get('/create-blog', [AdminBlogController::class, 'createBlog']);
 
 Route::get('/admin/login', [AdminUserController::class, 'loginPage'])->name('admin-login');
 Route::post('/admin/login', [AdminUserController::class, 'login'])->name('admin-login-post');
@@ -38,14 +36,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/blogs', [AdminBlogController::class, 'blogsPage'])->name('admin-blogs');
     Route::get('/admin/blogs/edit/{id}', [AdminBlogController::class, 'editBlogPage'])->name('admin-blog-edit-page');
     Route::post('/admin/blog/edit/{id}', [AdminBlogController::class, 'editBlog'])->name('admin-blog-edit');
-    Route::get('/admin/blog/delete{id}', [AdminBlogController::class, 'deleteBlog'])->name('admin-blog-delete');
+    Route::get('/admin/blog/delete/{id}', [AdminBlogController::class, 'deleteBlog'])->name('admin-blog-delete');
 
     Route::get('/admin/categories', [AdminCategoryController::class, 'categoriesPage'])->name('admin-categories');
     Route::get('/admin/categories/add', [AdminCategoryController::class, 'addCategoryPage'])->name('admin-category-add-page');
     Route::post('/admin/category/add', [AdminCategoryController::class, 'addCategory'])->name('admin-category-add');
     Route::get('/admin/categories/edit/{id}', [AdminCategoryController::class, 'editCategoryPage'])->name('admin-category-edit-page');
     Route::post('/admin/category/edit/{id}', [AdminCategoryController::class, 'editCategory'])->name('admin-category-edit');
-    Route::get('/admin/category/delete{id}', [AdminCategoryController::class, 'deleteCategory'])->name('admin-category-delete');
+    Route::get('/admin/category/delete/{id}', [AdminCategoryController::class, 'deleteCategory'])->name('admin-category-delete');
     // ADMIN PANEL END
 });
 

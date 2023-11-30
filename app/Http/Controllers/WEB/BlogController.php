@@ -75,7 +75,7 @@ class BlogController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $blog = Blog::findOrFail($blogId);
+        $blog = Blog::findOrFail($blogId); // bashqasinin blogun editleye bilir. blog id ile
         $blog->title = $request->input('name');
         $blog->description = $request->input('description');
         $blog->author_id = auth()->user()->id;
@@ -85,7 +85,7 @@ class BlogController extends Controller
 
         if ($request->hasFile('image')) {
             if ($blog->image) {
-                Storage::disk('public')->delete('uploads/blogs/' . $blog->image);
+                Storage::disk('public')->delete('uploads/blogs/' . $blog->image); //duz sildiyini yoxlamaq
             }
             $imagePath = $request->file('image')->store('storage/uploads/blogs', 'public');
             $blog->image = basename($imagePath);
@@ -139,7 +139,7 @@ class BlogController extends Controller
 
     public function blogDelete($id)
     {
-        $blog = Blog::where('id', $id)->first();
+        $blog = Blog::where('id', $id)->first(); // bashqalarinin blogunu sile bilir + olmadiqda 404
         if ($blog->image) {
             $imagePath = storage_path('uploads/blogs/' . $blog->image);
 

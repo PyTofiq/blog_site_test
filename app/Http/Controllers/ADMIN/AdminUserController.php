@@ -17,17 +17,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminUserController extends Controller
 {
-    public function createUser()
-    {
-        $user = User::create([
-            'name' => 'Test admin',
-            'email' => 'test@test.com',
-            'password' => Hash::make('test123'),
-            'status' => 1,
-        ]);
 
-        return response()->json($user, 201);
-    }
     public function usersPage(){
         $users = User::all();
         return view('admin.users', compact('users'));
