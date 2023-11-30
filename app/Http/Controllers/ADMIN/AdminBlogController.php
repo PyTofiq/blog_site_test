@@ -29,7 +29,7 @@ class AdminBlogController extends Controller
 
     public function editBlogPage($blog){
         $old = Blog::with('categories')
-        ->where('id', $blog)->first(); // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
+        ->where('id', $blog)->firstOrFail(); // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
         $categories = Category::all();
         $authors = User::where('status', 0)->get();
         // return $old->categories;
@@ -75,7 +75,7 @@ class AdminBlogController extends Controller
     }
 
     public function deleteBlog($id){
-        $blog = Blog::where('id', $id)->first();  // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
+        $blog = Blog::where('id', $id)->firstOrFail();  // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
         if ($blog->image) {
             $imagePath = public_path('uploads/blogs/' . $blog->image); //duzgun yerden silmir
 

@@ -33,7 +33,7 @@ class WebController extends Controller
     {
         $blog = Blog::with(['categories', 'authors'])
             ->where('id', $id)
-            ->first();
+            ->firstOrFail();
         $isUser = null;
         if (auth()->user()) {
             $isUser = auth()->user()->id == $blog->author_id;
@@ -51,7 +51,7 @@ class WebController extends Controller
         $old = Blog::with('categories')
             ->where('id', $blog)
             ->where('author_id', auth()->user()->id)
-            ->first();
+            ->firstOrFail();
         $categories = Category::all();
         return view('web.blogs.blog-edit', compact('old', 'categories'));
     }
@@ -123,7 +123,7 @@ class WebController extends Controller
 
     public function blogDelete($id)
     {
-        $blog = Blog::where('id', $id)->first();
+        $blog = Blog::where('id', $id)->firstOrFail();
         if ($blog->image) {
             $imagePath = public_path('uploads/blogs/' . $blog->image);
 

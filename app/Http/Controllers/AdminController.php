@@ -54,7 +54,7 @@ class AdminController extends Controller
     }
     public function editBlogPage($blog){
         $old = Blog::with('categories')
-        ->where('id', $blog)->first();
+        ->where('id', $blog)->firstOrFail();
         $categories = Category::all();
         $authors = User::where('status', 0)->get();
         // return $old->categories;
@@ -131,7 +131,7 @@ class AdminController extends Controller
     }
 
     public function editCategoryPage(Request $request, $category){
-        $old = Category::where('id', $category)->first();
+        $old = Category::where('id', $category)->firstOrFail();
         return view('admin.categories.edit', compact('old'));
     }
 
@@ -139,7 +139,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
         ]);
-        $update = Category::where('id', $category)->first();
+        $update = Category::where('id', $category)->firstOrFail();
         $update->name = $request->input('name');
         $update->update();
         return redirect()->route('admin-categories');

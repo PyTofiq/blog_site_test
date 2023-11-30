@@ -36,7 +36,7 @@ class BlogController extends Controller
     {
         $blog = Blog::with(['categories', 'authors'])
             ->where('id', $id)
-            ->first();
+            ->firstOrFail();
         $isUser = null;
         if (auth()->user()) {
             $isUser = auth()->user()->id == $blog->author_id;
@@ -54,7 +54,7 @@ class BlogController extends Controller
         $old = Blog::with('categories')
             ->where('id', $blog)
             ->where('author_id', auth()->user()->id)
-            ->first();
+            ->firstOrFail();
         if($old == null){
             abort(404);
         }
@@ -139,7 +139,7 @@ class BlogController extends Controller
 
     public function blogDelete($id)
     {
-        $blog = Blog::where('id', $id)->first(); // bashqalarinin blogunu sile bilir + olmadiqda 404
+        $blog = Blog::where('id', $id)->firstOrFail(); // bashqalarinin blogunu sile bilir + olmadiqda 404
         if ($blog->image) {
             $imagePath = storage_path('uploads/blogs/' . $blog->image);
 

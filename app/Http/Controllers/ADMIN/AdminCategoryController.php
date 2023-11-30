@@ -40,7 +40,7 @@ class AdminCategoryController extends Controller
     }
 
     public function editCategoryPage(Request $request, $category){
-        $old = Category::where('id', $category)->first();
+        $old = Category::where('id', $category)->firstOrFail();
         return view('admin.categories.edit', compact('old'));
     }
 
@@ -51,7 +51,7 @@ class AdminCategoryController extends Controller
         if($validator->fails()){
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        $update = Category::where('id', $category)->first();
+        $update = Category::where('id', $category)->firstOrFail();
         $update->name = $request->input('name');
         $update->update();
         return redirect()->route('admin-categories');
