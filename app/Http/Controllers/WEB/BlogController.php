@@ -73,7 +73,7 @@ class BlogController extends Controller
         }
 
         $blog = Blog::findOrFail($blogId); // bashqasinin blogun editleye bilir. blog id ile
-        if(Auth::guard('author')->user()->id == $blogId){
+        if(Auth::guard('author')->user()->id == $blog->author_id){
             $blog->title = $request->input('name');
             $blog->description = $request->input('description');
             $blog->author_id = Auth::guard('author')->user()->id;
@@ -95,6 +95,8 @@ class BlogController extends Controller
             $blog->save();
 
             return redirect()->route('profile')->with('success', 'Blog updated successfully');
+        }else{
+            return redirect()->back();
         }
     }
 
@@ -143,7 +145,7 @@ class BlogController extends Controller
     public function blogDelete($id)
     {
         $blog = Blog::where('id', $id)->firstOrFail();
-        if(Auth::guard('author')->user()->id == $id){
+        if(Auth::guard('author')->user()->id == $blog->author_id){
 
         if ($blog->image) {
             Storage::disk('public')->delete($blog->image);

@@ -11,4 +11,5 @@ class Author extends Model implements Authenticatable
 {
     use AuthenticatableTrait;
     use HasFactory;
+    protected $table = 'authors';
 }

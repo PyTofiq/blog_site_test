@@ -13,11 +13,9 @@
             @endif
 
             {{-- {{ dd($blog) }} --}}
-            @if($blog->image)
             <div class="blog-image mb-5">
                 <img src="{{ $blog->coverImage() }}" alt="" width="100px" height="100px">
             </div>
-            @endif
 
             <div class="blog-title">
                 <h1>Title</h1>

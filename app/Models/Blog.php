@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
-use App\Models\User;
+use App\Models\Author;
 
 class Blog extends Model
 {
@@ -28,7 +28,7 @@ class Blog extends Model
 
     public function authors()
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(Author::class, 'author_id');
     }
 
     public function coverImage()
@@ -36,7 +36,7 @@ class Blog extends Model
         if (!is_null($this->image)) {
             return asset($this->image);
         }
-        return asset('uploads/default.png');
+        return asset('storage/uploads/default.png');
     }
 
 

@@ -2,9 +2,7 @@
     @foreach ($blogs as $blog)
         <div class="blog col-md-3">
             <div class="card">
-                @if ($blog->image)
                     <img src="{{ asset($blog->coverImage()) }}" class="card-img-top" alt="{{ $blog->image }}">
-                @endif
                 <div class="card-body">
                     <h5 class="card-title"><a href="{{ route('blog-details', $blog->id) }}">{{ $blog->title }}</a></h5>
                     <p class="card-text">
