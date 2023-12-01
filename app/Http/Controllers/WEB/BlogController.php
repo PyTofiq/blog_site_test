@@ -35,8 +35,8 @@ class BlogController extends Controller
             ->where('id', $id)
             ->firstOrFail();
         $isUser = null;
-        if (auth()->user()) {
-            $isUser = auth()->user()->id == $blog->author_id;
+        if (Auth::guard('author')->user()) {
+            $isUser = Auth::guard('author')->user()->id == $blog->author_id;
         }
         $blogs = Blog::with(['categories', 'authors'])
             ->where('author_id', $blog->author_id)
@@ -50,7 +50,7 @@ class BlogController extends Controller
     {
         $old = Blog::with('categories')
             ->where('id', $blog)
-            ->where('author_id', auth()->user()->id)
+            ->where('author_id', Auth::guard('author')->user()->id)
             ->firstOrFail();
         if ($old == null) {
             abort(404);
@@ -73,27 +73,29 @@ class BlogController extends Controller
         }
 
         $blog = Blog::findOrFail($blogId); // bashqasinin blogun editleye bilir. blog id ile
-        $blog->title = $request->input('name');
-        $blog->description = $request->input('description');
-        $blog->author_id = auth()->user()->id;
+        if(Auth::guard('author')->user()->id == $blogId){
+            $blog->title = $request->input('name');
+            $blog->description = $request->input('description');
+            $blog->author_id = Auth::guard('author')->user()->id;
 
-        $categories = $request->input('category') ?? [];
-        $blog->categories()->sync($categories);
+            $categories = $request->input('category') ?? [];
+            $blog->categories()->sync($categories);
 
-        if ($request->hasFile('image')) {
-            if ($blog->image) {
-                Storage::disk('public')->delete($blog->image); //duz sildiyini yoxlamaq
+            if ($request->hasFile('image')) {
+                if ($blog->image) {
+                    Storage::disk('public')->delete($blog->image); //duz sildiyini yoxlamaq
+                }
+                $year = now()->year;
+                $month = now()->month;
+                $path = "storage/images/{$year}/{$month}/{$blogId}";
+                $imagePath = $request->file('image')->store($path, 'public');
+                $blog->image = $imagePath;
             }
-            $year = now()->year;
-            $month = now()->month;
-            $path = "storage/images/{$year}/{$month}/{$blogId}";
-            $imagePath = $request->file('image')->store($path, 'public');
-            $blog->image = $imagePath;
+
+            $blog->save();
+
+            return redirect()->route('profile')->with('success', 'Blog updated successfully');
         }
-
-        $blog->save();
-
-        return redirect()->route('profile')->with('success', 'Blog updated successfully');
     }
 
     public function blogAddPage()
@@ -118,7 +120,7 @@ class BlogController extends Controller
         $blog = new Blog();
         $blog->title = $request->input('name');
         $blog->description = $request->input('description');
-        $blog->author_id = auth()->user()->id;
+        $blog->author_id = Auth::guard('author')->user()->id;
         $blog->save();
 
         $categories = $request->input('category') ?? [];
@@ -141,6 +143,7 @@ class BlogController extends Controller
     public function blogDelete($id)
     {
         $blog = Blog::where('id', $id)->firstOrFail();
+        if(Auth::guard('author')->user()->id == $id){
 
         if ($blog->image) {
             Storage::disk('public')->delete($blog->image);
@@ -158,6 +161,9 @@ class BlogController extends Controller
 
         $blog->delete();
         return redirect()->route('profile');
+        }else{
+            return redirect()->back();
+        }
     }
 
     private function saveImage($file, $blogId)

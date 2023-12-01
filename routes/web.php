@@ -17,8 +17,8 @@ Route::middleware(['author'])->group(function () {
     // blog
     Route::get('/blog-add', [BlogController::class, 'blogAddPage'])->name('blog-add-page');
     Route::post('/blog-add', [BlogController::class, 'blogAdd'])->name('blog-add-post');
-    Route::get('/blog-edit/{id}', [BlogController::class, 'blogEditPage'])->name('blog-edit-page');
-    Route::post('/blog-edit/{id}', [BlogController::class, 'blogEdit'])->name('blog-edit-post');
+    Route::get('/blog/edit/{id}', [BlogController::class, 'blogEditPage'])->name('blog-edit-page');
+    Route::post('/blog/edit/{id}', [BlogController::class, 'blogEdit'])->name('blog-edit-post');
     Route::get('/blog-delete/{id}', [BlogController::class, 'blogDelete'])->name('blog-delete');
 });
 
