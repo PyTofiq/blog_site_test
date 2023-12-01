@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\WEB;
 
 use App\Http\Controllers\Controller;
+use App\Models\Author;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\User;
@@ -33,17 +34,9 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-
-            if ($user->status == 0) {
-                // Only allow login if the user's status is 0
+        if (Auth::guard('author')->attempt($credentials)) {
+            $user = Auth::guard('author')->user();
                 return redirect()->route('profile');
-            } else {
-                // Logout if the user's status is not 0
-                Auth::logout();
-                return redirect()->route('login-page')->withErrors(['error' => 'Your account is not authorized to access.']);
-            }
         }
 
         return redirect()->route('login-page')->withErrors(['error' => 'Invalid email or password']);
@@ -66,24 +59,24 @@ class AuthController extends Controller
         }
 
         // Create a new user instance
-        $user = new User();
+        $user = new Author();
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
-        $user->status = 0; // Setting the status to 0 for a regular user
 
         // Save the user to the database
         $user->save();
 
         // You can optionally log in the user after registration
-        auth()->login($user);
+        Auth::guard('author')->login($user);
 
         return redirect()->route('profile');
     }
 
     public function logout()
     {
-        Auth::logout();
+        // auth()->logout();
+        Auth::guard('author')->logout();
         return redirect()->route('blogs');
     }
 }

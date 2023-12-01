@@ -5,7 +5,7 @@
 @section('content')
 <div class="container">
 
-    
+
 
     <h2>Category table</h2>
     <a class="btn btn-success mb-5" href="{{ route('admin-category-add-page') }}">Create new category</a>
@@ -22,7 +22,7 @@
                     <tr>
                         <th scope="row">{{ $loop->iteration }}</th>
                         <td>{{ $category->name }}</td>
-                        <td></td>
+                        <td>{{ $category->blogs()->count() }}</td>
                         <td>
                             <a href="{{ route('admin-category-edit-page', $category->id) }}" class="btn btn-outline-success">Edit</a>
                             <a href="{{ route('admin-category-delete', $category->id) }}" class="btn btn-outline-danger">Delete</a>

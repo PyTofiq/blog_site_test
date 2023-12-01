@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ADMIN;
 
 use App\Http\Controllers\Controller;
+use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -19,7 +20,7 @@ class AdminUserController extends Controller
 {
 
     public function usersPage(){
-        $users = User::all();
+        $users = Author::all();
         return view('admin.users', compact('users'));
     }
 
@@ -39,13 +40,8 @@ class AdminUserController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            return redirect()->route('admin-users')->with('success', 'Login successful');
 
-            if ($user->status == 1) {
-                return redirect()->route('admin-users')->with('success', 'Login successful');
-            } else {
-                Auth::logout();
-                return back()->withInput()->withErrors(['admin-login-email' => 'Your account is inactive']);
-            }
         }
 
         return back()->withInput()->withErrors(['admin-login-email' => 'Invalid email or password']);

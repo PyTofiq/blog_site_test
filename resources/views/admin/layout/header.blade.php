@@ -20,7 +20,7 @@
                 <li><a href="{{ route('admin-categories') }}">Categories</a></li>
             </ul>
         </div>
-        <a href="{{ route('logout') }}">Log out</a>
+        <a href="{{ route('admin-logout') }}">Log out</a>
     </div>
 </div>
 

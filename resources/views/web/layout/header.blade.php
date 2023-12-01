@@ -25,7 +25,7 @@
                     @endforeach
                 </ul>
             </div>
-            @auth
+            @auth('author')
             <div>
                 <a href="{{ route('profile') }}">Profile</a>
                 <a href="{{ route('logout') }}">Logout</a>

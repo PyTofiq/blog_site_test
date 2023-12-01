@@ -15,9 +15,9 @@ class AuthorMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user =$request->user();
+        $user =$request->user('author');
 
-        if($user && $user->status == 0){
+        if($user){
             return $next($request);
         }
         return redirect()->route('login-page');

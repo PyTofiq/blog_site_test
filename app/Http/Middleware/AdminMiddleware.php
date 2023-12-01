@@ -17,7 +17,7 @@ class AdminMiddleware
     {
         $user =$request->user();
 
-        if($user && $user->status == 1){
+        if($user){
             return $next($request);
         }
         return redirect()->route('admin-login');

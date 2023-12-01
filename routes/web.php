@@ -9,10 +9,6 @@ use App\Http\Controllers\WEB\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/admin/login', [AdminUserController::class, 'loginPage'])->name('admin-login');
-Route::post('/admin/login', [AdminUserController::class, 'login'])->name('admin-login-post');
-Route::get('/logout', [AdminUserController::class, 'logout'])->name('admin-logout');
-
 Route::middleware(['author'])->group(function () {
     // profile
     Route::get('/profile', [ProfileController::class, 'profilePage'])->name('profile');
@@ -26,11 +22,16 @@ Route::middleware(['author'])->group(function () {
     Route::get('/blog-delete/{id}', [BlogController::class, 'blogDelete'])->name('blog-delete');
 });
 
+Route::get('/admin/login', [AdminUserController::class, 'loginPage'])->name('admin-login');
+Route::post('/admin/login', [AdminUserController::class, 'login'])->name('admin-login-post');
+
 Route::middleware(['auth', 'admin'])->group(function () {
     // ADMIN PANEL
     Route::get('/admin', function () {
         return redirect()->route('admin-users');
     });
+
+    Route::get('/admin/logout', [AdminUserController::class, 'logout'])->name('admin-logout');
     Route::get('/admin/users', [AdminUserController::class, 'usersPage'])->name('admin-users');
 
     Route::get('/admin/blogs', [AdminBlogController::class, 'blogsPage'])->name('admin-blogs');
@@ -58,3 +59,20 @@ Route::post('/register', [AuthController::class, 'register'])->name('register-po
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::redirect('/', '/blogs');
+
+
+// // tab
+// Debugbar::info('Info');
+// Debugbar::error('error ');
+// Debugbar::warning('warning');
+// Debugbar::addMessage('some message');
+
+// // timeline tab
+// Debugbar::startMeasure('something', 'this is for timeline tab');
+
+// // exceptions tab
+// try{
+//     throw new Exception('Try message');
+// }catch(Exception $e){
+//     Debugbar::addException($e);
+// }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ADMIN;
 
 use App\Http\Controllers\Controller;
+use App\Models\Author;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 
 class AdminBlogController extends Controller
@@ -31,7 +33,7 @@ class AdminBlogController extends Controller
         $old = Blog::with('categories')
         ->where('id', $blog)->firstOrFail(); // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
         $categories = Category::all();
-        $authors = User::where('status', 0)->get();
+        $authors = Author::all();
         // return $old->categories;
         return view('admin.blogs.edit', compact(
         'old',
@@ -60,10 +62,13 @@ class AdminBlogController extends Controller
 
         if ($request->hasFile('image')) {
             if ($blog->image) {
-                Storage::disk('public')->delete('uploads/blogs/' . $blog->image);
+                Storage::disk('public')->delete($blog->image); //duz sildiyini yoxlamaq
             }
-            $imagePath = $request->file('image')->store('uploads/blogs', 'public'); // duzgun yere upload etmir
-            $blog->image = basename($imagePath);
+            $year = now()->year;
+            $month = now()->month;
+            $path = "storage/images/{$year}/{$month}/{$blogId}";
+            $imagePath = $request->file('image')->store($path, 'public');
+            $blog->image = $imagePath;
         }
 
 
@@ -76,12 +81,19 @@ class AdminBlogController extends Controller
 
     public function deleteBlog($id){
         $blog = Blog::where('id', $id)->firstOrFail();  // blog yoxdursa 404 olmalidir, cunki ashagidaki setrler ishlemeyecek
+        // return $blog;
         if ($blog->image) {
-            $imagePath = public_path('uploads/blogs/' . $blog->image); //duzgun yerden silmir
+            Storage::disk('public')->delete($blog->image);
+        }
 
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
+        // Check if the folder is empty
+        $year = now()->year;
+        $month = now()->month;
+        $path = "storage/images/{$year}/{$month}/{$id}";
+
+        if (File::exists(public_path($path)) && count(File::allFiles(public_path($path))) === 0) {
+            // If the folder is empty, delete it
+            File::deleteDirectory(public_path($path));
         }
 
         $blog->delete();

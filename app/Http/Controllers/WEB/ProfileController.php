@@ -19,7 +19,7 @@ class ProfileController extends Controller
 {
     public function profilePage()
     {
-        $user = auth()->user();
+        $user = Auth::guard('author')->user();
         $blogs = Blog::where('author_id', $user->id)->get();
         return view('web.profile', compact(
             'user',
@@ -27,12 +27,12 @@ class ProfileController extends Controller
         ));
     }
     public function profileEditPage(){
-        $old = auth()->user();
+        $old = Auth::guard('author')->user();
         return view('web.profile-edit', compact('old'));
     }
     public function profileEdit(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::guard('author')->user();
 
         $validator = Validator::make($request->all(),[
             'name' => 'required|string|max:255',

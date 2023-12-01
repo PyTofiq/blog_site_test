@@ -3,17 +3,14 @@
 namespace App\Http\Controllers\WEB;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Blog;
 use App\Models\Category;
 use App\Models\User;
-use App\Models\Blog;
-use App\Models\BlogCategory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
 
 class BlogController extends Controller
 {
@@ -55,7 +52,7 @@ class BlogController extends Controller
             ->where('id', $blog)
             ->where('author_id', auth()->user()->id)
             ->firstOrFail();
-        if($old == null){
+        if ($old == null) {
             abort(404);
         }
         $categories = Category::all();
@@ -64,14 +61,14 @@ class BlogController extends Controller
 
     public function blogEdit(Request $request, $blogId)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|min:5',
             'description' => 'required|string',
             'category' => 'array',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
 
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -85,12 +82,14 @@ class BlogController extends Controller
 
         if ($request->hasFile('image')) {
             if ($blog->image) {
-                Storage::disk('public')->delete('uploads/blogs/' . $blog->image); //duz sildiyini yoxlamaq
+                Storage::disk('public')->delete($blog->image); //duz sildiyini yoxlamaq
             }
-            $imagePath = $request->file('image')->store('storage/uploads/blogs', 'public');
-            $blog->image = basename($imagePath);
+            $year = now()->year;
+            $month = now()->month;
+            $path = "storage/images/{$year}/{$month}/{$blogId}";
+            $imagePath = $request->file('image')->store($path, 'public');
+            $blog->image = $imagePath;
         }
-
 
         $blog->save();
 
@@ -105,14 +104,14 @@ class BlogController extends Controller
 
     public function blogAdd(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255|min:5',
             'description' => 'required|string',
             'category' => 'array',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
 
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -126,10 +125,12 @@ class BlogController extends Controller
         $blog->categories()->sync($categories);
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('storage/uploads/blogs', 'public');
-            $blog->image = basename($imagePath);
+            $imagePath = $this->saveImage($request->file('image'), $blog->id);
+            if ($blog->image) {
+                Storage::disk('public')->delete($blog->image); // Delete the old image
+            }
+            $blog->image = $imagePath;
         }
-
 
         $blog->save();
 
@@ -139,19 +140,36 @@ class BlogController extends Controller
 
     public function blogDelete($id)
     {
-        $blog = Blog::where('id', $id)->firstOrFail(); // bashqalarinin blogunu sile bilir + olmadiqda 404
-        if ($blog->image) {
-            $imagePath = storage_path('uploads/blogs/' . $blog->image);
+        $blog = Blog::where('id', $id)->firstOrFail();
 
-            if (File::exists($imagePath)) {
-                File::delete($imagePath);
-            }
+        if ($blog->image) {
+            Storage::disk('public')->delete($blog->image);
         }
 
+        // Check if the folder is empty
+        $year = now()->year;
+        $month = now()->month;
+        $path = "storage/images/{$year}/{$month}/{$id}";
+
+        if (File::exists(public_path($path)) && count(File::allFiles(public_path($path))) === 0) {
+            // If the folder is empty, delete it
+            File::deleteDirectory(public_path($path));
+        }
 
         $blog->delete();
         return redirect()->route('profile');
+    }
 
+    private function saveImage($file, $blogId)
+    {
+        $year = now()->year;
+        $month = now()->month;
+        $path = "storage/images/{$year}/{$month}/{$blogId}";
+
+        return $file->store($path, 'public');
     }
 
 }
+
+
+

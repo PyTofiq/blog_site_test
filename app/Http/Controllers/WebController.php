@@ -207,4 +207,5 @@ class WebController extends Controller
             'blogs',
         ));
     }
+
 }

@@ -36,9 +36,6 @@
                 <input type="password" class="form-control" id="admin-login-password" name="password" >
                 <label for="admin-login-password">Password</label>
               </div>
-              @error('admin-login-email')
-              <div class="alert alert-danger">{{ $message }}</div>
-          @enderror
 
               <button class="btn btn-primary mt-5 mb-5" type="submit">Submit</button>
 
